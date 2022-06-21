@@ -1,0 +1,79 @@
+{
+	"emulators": {
+		"default": {
+			"port": 3569,
+			"serviceAccount": "emulator-account"
+		}
+	},
+	"contracts": {
+		"MetadataViews": {
+			"source": "./contracts/MetadataViews.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"testnet": "0x631e88ae7f1d7c20",
+				"mainnet": "0x1d7e57aa55817448"
+			}
+		},
+		"NonFungibleToken": {
+			"source": "./contracts/NonFungibleToken.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"testnet": "0x631e88ae7f1d7c20",
+				"mainnet": "0x1d7e57aa55817448"
+			}
+		},
+		"FungibleToken": {
+			"source": "./contracts/FungibleToken.cdc",
+			"aliases": {
+			"emulator": "0xee82856bf20e2aa6",
+			"testnet": "0x9a0766d93b6608b7",
+			"mainnet": "0xf233dcee88fe0abe"
+			}
+		},
+		"FlowToken": {
+			"source": "./contracts/FlowToken.cdc",
+			"aliases":{
+				"emulator": "0x0ae53cb6e3f42a79"
+			}
+		},
+		"FuzzlePieceV2": {
+			"source": "./contracts/FuzzlePieceV2.cdc",
+			"aliases":{
+				"emulator": "0xf8d6e0586b0a20c7"
+			}
+		}
+	},
+	"networks": {
+		"emulator": "127.0.0.1:3569",
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testnet": "access.devnet.nodes.onflow.org:9000"
+	},
+	"accounts": {
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "a9e1f0c597371b711269d816aeb7e6b434febf879912f7ae8e6b6fff62afe989"
+		},
+		"emulator-account-user": {
+			"address": "f669cb8d41ce0c74",
+			"key": "26bae3c4ff5ac09748c8d82995940c870201ca0e4525e7398136ed2589a96470"
+		},
+		"testnet-account": {
+			"address": "${TESTNET_ADDRESS}",
+			"key": "${TESTNET_KEY}"
+		}
+	},
+	"deployments": {
+		"emulator": {
+			"emulator-account": [
+			  "NonFungibleToken",
+			  "MetadataViews",
+			  "FuzzlePieceV2"
+			]
+		},
+		"testnet": {
+			"testnet-account": [
+				"FuzzlePieceV2"
+			]
+		}
+	}
+}
