@@ -1,17 +1,21 @@
-package funcs
+package mint
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 
 	_ "embed"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
+	"github.com/jrkhan/flow-puzzle-hunt/cors"
 	"github.com/onflow/cadence"
+	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/client"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -24,6 +28,9 @@ type (
 		KeyIndicies []int    `json:"keyIndices"`
 		Signatures  []string `json:"signatures"`
 	}
+	Envelope struct {
+		SignedMessage SignedMessage `json:"signedMessage"`
+	}
 )
 
 func init() {
@@ -31,15 +38,16 @@ func init() {
 }
 
 func HandleMintRequest(w http.ResponseWriter, r *http.Request) {
-	var envelope struct {
-		SignedMessage SignedMessage `json:"signedMessage"`
-	}
-	if err := json.NewDecoder(r.Body).Decode(&envelope); err != nil {
+	cors.HandleCors(w, r)
+	var envelope = &Envelope{}
+	r.Body = http.MaxBytesReader(w, r.Body, 1048576)
+	dec := json.NewDecoder(r.Body)
+	if err := dec.Decode(envelope); err != nil {
 		fmt.Fprint(w, "error decoding message")
 		return
 	}
 	ctx := context.Background()
-	if err := envelope.SignedMessage.VerifySignature(ctx); err != nil {
+	if err := envelope.SignedMessage.VerifySignature(ctx, w); err != nil {
 		fmt.Fprint(w, err.Error())
 		return
 	}
@@ -65,7 +73,7 @@ func GetMinter() string {
 //go:embed verifysignatures.cdc
 var verifySignaturesQuery string
 
-func (s *SignedMessage) VerifySignature(ctx context.Context) error {
+func (s *SignedMessage) VerifySignature(ctx context.Context, w io.Writer) error {
 	// bootstrap client
 	fc, err := client.New(GetAccessNode(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -79,7 +87,7 @@ func (s *SignedMessage) VerifySignature(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-
+	fmt.Fprint(w, args[0].String())
 	// execute script
 	val, err := fc.ExecuteScriptAtLatestBlock(ctx, []byte(q), args)
 	if err != nil {
@@ -94,12 +102,12 @@ func (s *SignedMessage) VerifySignature(ctx context.Context) error {
 
 func (s *SignedMessage) ToCadenceValues() ([]cadence.Value, error) {
 	// convert address
-	cAddr, err := cadence.NewString(s.Address)
-	if err != nil {
-		return nil, err
-	}
-	// convert message
-	cMessage, err := cadence.NewString(s.Message)
+	addr := flow.HexToAddress(s.Address)
+	cAddr := cadence.NewAddress(addr)
+
+	// convert message to hex, then to string
+	hx := hex.EncodeToString([]byte(s.Message))
+	cMessage, err := cadence.NewString(hx)
 	if err != nil {
 		return nil, err
 	}

@@ -1,4 +1,4 @@
-module github.com/flow-puzzle-hunt/functions/redirect
+module github.com/jrkhan/flow-puzzle-hunt/functions/redirect
 
 go 1.16
 
