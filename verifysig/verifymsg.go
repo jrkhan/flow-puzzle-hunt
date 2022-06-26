@@ -8,6 +8,8 @@ import (
 	"io"
 	"os"
 
+	_ "embed"
+
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 	flowGrpc "github.com/onflow/flow-go-sdk/access/grpc"

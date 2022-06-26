@@ -15,6 +15,7 @@ import (
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 	"github.com/jrkhan/flow-puzzle-hunt/cors"
+	"github.com/jrkhan/flow-puzzle-hunt/verifysig"
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 	flowGrpc "github.com/onflow/flow-go-sdk/access/grpc"
