@@ -163,7 +163,9 @@ pub contract FuzzlePieceV2: NonFungibleToken {
         }    
     
         pub fun borrowFuzzlePiece(id: UInt64): &FuzzlePieceV2.NFT? {
-            panic("TODO")
+            let optNFT = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT?
+            let asFuzzle = optNFT as! &FuzzlePieceV2.NFT?
+            return asFuzzle
         }
 }
     
