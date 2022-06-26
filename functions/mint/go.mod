@@ -8,7 +8,8 @@ require (
 	github.com/ethereum/go-ethereum v1.10.19 // indirect
 	github.com/go-test/deep v1.0.8 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/jrkhan/flow-puzzle-hunt/cors v0.0.0-20220626162953-c79057cdb1c3
+	github.com/jrkhan/flow-puzzle-hunt/cors v0.0.0-20220626173214-cfd276a8090a
+	github.com/jrkhan/flow-puzzle-hunt/verifysig v0.0.0-20220626172933-c87783b3bbac
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.14 // indirect
 	github.com/logrusorgru/aurora v2.0.3+incompatible // indirect

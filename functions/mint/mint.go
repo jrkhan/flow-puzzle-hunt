@@ -25,6 +25,9 @@ func init() {
 	functions.HTTP("MintFuzzle", HandleMintRequest)
 }
 
+//go:embed mint.cdc
+var mintTx string
+
 func tx() string {
 	formatted := strings.Replace(mintTx, `"../../contracts/NonFungibleToken.cdc"`, `${NON_FUNGIBLE_TOKEN_ADDRESS}`, -1)
 	formatted = strings.Replace(formatted, `"../../contracts/FuzzlePieceV2.cdc"`, `${FUZZLE_PIECE_V2_ADDRESS}`, -1)
@@ -65,6 +68,3 @@ func GetMinter() string {
 	}
 	return val
 }
-
-//go:embed mint.cdc
-var mintTx string
