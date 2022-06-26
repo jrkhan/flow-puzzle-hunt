@@ -2,11 +2,8 @@ package mint
 
 import (
 	"context"
-	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -16,11 +13,6 @@ import (
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 	"github.com/jrkhan/flow-puzzle-hunt/cors"
 	"github.com/jrkhan/flow-puzzle-hunt/verifysig"
-	"github.com/onflow/cadence"
-	"github.com/onflow/flow-go-sdk"
-	flowGrpc "github.com/onflow/flow-go-sdk/access/grpc"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 type (
@@ -53,6 +45,8 @@ func HandleMintRequest(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, err.Error())
 		return
 	}
+	// message has been verified
+
 	fmt.Fprint(w, "message verified!")
 }
 
@@ -74,63 +68,3 @@ func GetMinter() string {
 
 //go:embed mint.cdc
 var mintTx string
-
-func (s *SignedMessage) VerifySignature(ctx context.Context, w io.Writer) error {
-	// bootstrap client
-	fc, err := flowGrpc.NewClient(GetAccessNode(), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		return err
-	}
-
-	q := tx()
-
-	// convert args to cadence values
-	args, err := s.ToCadenceValues()
-	if err != nil {
-		return err
-	}
-	fmt.Fprint(w, args[0].String())
-	// execute script
-	val, err := fc.ExecuteScriptAtLatestBlock(ctx, []byte(q), args)
-	if err != nil {
-		return err
-	}
-
-	if !val.ToGoValue().(bool) {
-		return errors.New("signed message was invalid")
-	}
-	return nil
-}
-
-func (s *SignedMessage) ToCadenceValues() ([]cadence.Value, error) {
-	// convert address
-	addr := flow.HexToAddress(s.Address)
-	cAddr := cadence.NewAddress(addr)
-
-	// convert message to hex, then to string
-	hx := hex.EncodeToString([]byte(s.Message))
-	cMessage, err := cadence.NewString(hx)
-	if err != nil {
-		return nil, err
-	}
-	// convert signatures
-	cSigs := make([]cadence.Value, len(s.Signatures))
-	for i, sig := range s.Signatures {
-		cSigs[i], err = cadence.NewString(sig)
-		if err != nil {
-			return nil, err
-		}
-	}
-	caSigs := cadence.NewArray(cSigs)
-
-	// convert key indicies
-	ckeyIndices := make([]cadence.Value, len(s.KeyIndicies))
-	for i, ki := range s.KeyIndicies {
-		ckeyIndices[i] = cadence.NewInt(ki)
-	}
-	caKeyIndices := cadence.NewArray(ckeyIndices)
-
-	return []cadence.Value{
-		cAddr, cMessage, caKeyIndices, caSigs,
-	}, nil
-}
