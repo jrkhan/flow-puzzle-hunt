@@ -1,20 +1,13 @@
-package mint
+package verifysig
 
 import (
 	"context"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
-	"strings"
 
-	_ "embed"
-
-	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
-	"github.com/jrkhan/flow-puzzle-hunt/cors"
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 	flowGrpc "github.com/onflow/flow-go-sdk/access/grpc"
@@ -23,37 +16,16 @@ import (
 )
 
 type (
-	Envelope struct {
-		SignedMessage verifysig.SignedMessage `json:"signedMessage"`
+	SignedMessage struct {
+		Address     string   `json:"address"`
+		Message     string   `json:"message"`
+		KeyIndicies []int    `json:"keyIndices"`
+		Signatures  []string `json:"signatures"`
 	}
 )
 
-func init() {
-	functions.HTTP("MintFuzzle", HandleMintRequest)
-}
-
-func tx() string {
-	formatted := strings.Replace(mintTx, `"../../contracts/NonFungibleToken.cdc"`, `${NON_FUNGIBLE_TOKEN_ADDRESS}`, -1)
-	formatted = strings.Replace(formatted, `"../../contracts/FuzzlePieceV2.cdc"`, `${FUZZLE_PIECE_V2_ADDRESS}`, -1)
-	return os.ExpandEnv(formatted)
-}
-
-func HandleMintRequest(w http.ResponseWriter, r *http.Request) {
-	cors.HandleCors(w, r)
-	var envelope = &Envelope{}
-	r.Body = http.MaxBytesReader(w, r.Body, 1048576)
-	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(envelope); err != nil {
-		fmt.Fprint(w, "error decoding message")
-		return
-	}
-	ctx := context.Background()
-	if err := envelope.SignedMessage.VerifySignature(ctx, w); err != nil {
-		fmt.Fprint(w, err.Error())
-		return
-	}
-	fmt.Fprint(w, "message verified!")
-}
+//go:embed verifysignatures.cdc
+var verifySignaturesQuery string
 
 func GetAccessNode() string {
 	val, has := os.LookupEnv("FLOW_ACCESS_NODE")
@@ -63,25 +35,14 @@ func GetAccessNode() string {
 	return "access.devnet.nodes.onflow.org:9000"
 }
 
-func GetMinter() string {
-	val, has := os.LookupEnv("FUZZLE_MINTER_KEY")
-	if !has {
-		return ""
-	}
-	return val
-}
-
-//go:embed mint.cdc
-var mintTx string
-
 func (s *SignedMessage) VerifySignature(ctx context.Context, w io.Writer) error {
 	// bootstrap client
 	fc, err := flowGrpc.NewClient(GetAccessNode(), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return err
 	}
-
-	q := tx()
+	// expand script using env variables
+	q := os.ExpandEnv(verifySignaturesQuery)
 
 	// convert args to cadence values
 	args, err := s.ToCadenceValues()

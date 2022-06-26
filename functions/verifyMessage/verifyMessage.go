@@ -13,6 +13,7 @@ import (
 	_ "embed"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
+	"github.com/jrkhan/flow-puzzle-hunt/cors"
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/client"
@@ -35,22 +36,9 @@ type (
 func init() {
 	functions.HTTP("MintFuzzle", HandleMintRequest)
 }
-func HandleCors(w http.ResponseWriter, r *http.Request) {
-	// Set CORS headers for the preflight request
-	if r.Method == http.MethodOptions {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "POST")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		w.Header().Set("Access-Control-Max-Age", "3600")
-		w.WriteHeader(http.StatusNoContent)
-		return
-	}
-	// Set CORS headers for the main request.
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-}
 
 func HandleMintRequest(w http.ResponseWriter, r *http.Request) {
-	HandleCors(w, r)
+	cors.HandleCors(w, r)
 	var envelope = &Envelope{}
 	r.Body = http.MaxBytesReader(w, r.Body, 1048576)
 	dec := json.NewDecoder(r.Body)

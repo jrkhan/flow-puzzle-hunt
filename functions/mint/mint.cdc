@@ -1,5 +1,5 @@
-import NonFungibleToken from ${NON_FUNGIBLE_TOKEN_ADDRESS}
-import FuzzlePieceV2 from ${FUZZLE_PIECE_ADDRESS}
+import NonFungibleToken from "../../contracts/NonFungibleToken.cdc"
+import FuzzlePieceV2 from "../../contracts/FuzzlePieceV2.cdc"
 
 // This transction uses the NFTMinter resource to mint a new NFT.
 //
