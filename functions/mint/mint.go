@@ -15,6 +15,9 @@ import (
 	"github.com/jrkhan/flow-puzzle-hunt/verifysig"
 )
 
+//go:embed mint.cdc
+var mintTx string
+
 type (
 	Envelope struct {
 		SignedMessage verifysig.SignedMessage `json:"signedMessage"`
@@ -24,9 +27,6 @@ type (
 func init() {
 	functions.HTTP("MintFuzzle", HandleMintRequest)
 }
-
-//go:embed mint.cdc
-var mintTx string
 
 func tx() string {
 	formatted := strings.Replace(mintTx, `"../../contracts/NonFungibleToken.cdc"`, `${NON_FUNGIBLE_TOKEN_ADDRESS}`, -1)
