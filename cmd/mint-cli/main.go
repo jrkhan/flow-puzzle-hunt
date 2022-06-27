@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
 
 	"github.com/joho/godotenv"
 	"github.com/jrkhan/flow-puzzle-hunt/pkg/mint"
@@ -18,5 +19,9 @@ func main() {
 	}
 	minter = mint.NewMinter(mintMap)
 
-	minter.MintPiece(`0xf8d6e0586b0a20c7`, `49b89eea-4c1e-44f1-ab94-b9fdd0f72457`)
+	addr, err := minter.MintPiece(`0xf8d6e0586b0a20c7`, `49b89eea-4c1e-44f1-ab94-b9fdd0f72457`)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Print(addr)
 }

@@ -44,7 +44,7 @@ type (
 func txScript() []byte {
 	formatted := mintTx
 	for k, v := range contractMap {
-		formatted = strings.Replace(mintTx, k, v, -1)
+		formatted = strings.Replace(formatted, k, v, -1)
 	}
 	return []byte(os.ExpandEnv(formatted))
 }
@@ -95,7 +95,10 @@ func (m *PieceMinter) MintPiece(addr string, key string) (*flow.Identifier, erro
 	}
 	sk := proposerAccount.Keys[0]
 	// construct a signer from your private key and configured hash algorithm
-	pk, err := crypto.DecodePrivateKey(sk.SigAlgo, GetMinterKey())
+	pk, err := crypto.DecodePrivateKeyHex(sk.SigAlgo, GetMinterKey())
+	if err != nil {
+		return nil, err
+	}
 	signer, err := crypto.NewInMemorySigner(pk, proposerAccount.Keys[0].HashAlgo)
 	if err != nil {
 		panic("failed to create a signer")
@@ -122,12 +125,12 @@ func GetMinterAddress() string {
 	}
 	return val
 }
-func GetMinterKey() []byte {
+func GetMinterKey() string {
 	val, has := os.LookupEnv("FUZZLE_MINTER_KEY")
 	if !has {
 		panic("FUZZLE_MINTER_KEY is required")
 	}
-	return []byte(val)
+	return val
 }
 
 func (m *MintRequest) ToCadenceValues() ([]cadence.Value, error) {
