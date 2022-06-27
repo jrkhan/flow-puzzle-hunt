@@ -70,8 +70,14 @@ func (m *PieceMinter) MintPiece(addr string, key string) (*flow.Identifier, erro
 	}
 
 	latestBlock, err := fc.GetLatestBlockHeader(context.Background(), true)
+	if err != nil {
+		return nil, err
+	}
 	proposerAddress := flow.HexToAddress(GetMinterAddress())
 	proposerAccount, err := fc.GetAccountAtLatestBlock(context.Background(), proposerAddress)
+	if err != nil {
+		return nil, err
+	}
 	proposerKeyIndex := 0
 	// what guarentees do we have about this sequence number?
 	// do we need a distributed lock here?
