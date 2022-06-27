@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
-	"github.com/jrkhan/flow-puzzle-hunt/cors"
+	"github.com/jrkhan/flow-puzzle-hunt/pkg/cors"
 )
 
 type (

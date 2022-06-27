@@ -13,7 +13,7 @@ import (
 	_ "embed"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
-	"github.com/jrkhan/flow-puzzle-hunt/cors"
+	"github.com/jrkhan/flow-puzzle-hunt/pkg/cors"
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 	"github.com/onflow/flow-go-sdk/client"
