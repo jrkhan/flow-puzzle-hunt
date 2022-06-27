@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/joho/godotenv v1.4.0
-	github.com/jrkhan/flow-puzzle-hunt/pkg v0.0.0-20220627055040-c2ae735982b3
+	github.com/jrkhan/flow-puzzle-hunt v0.0.9
 )
 
 require (
@@ -21,6 +21,7 @@ require (
 	github.com/onflow/cadence v0.24.6 // indirect
 	github.com/onflow/flow-go-sdk v0.26.3 // indirect
 	github.com/onflow/flow-go/crypto v0.24.3 // indirect
+	github.com/onflow/flow/protobuf/go/flow v0.2.5 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

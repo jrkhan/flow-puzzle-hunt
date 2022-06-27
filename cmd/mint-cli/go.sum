@@ -248,8 +248,8 @@ github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af/go.mod h1:Nht
 github.com/joho/godotenv v1.4.0 h1:3l4+N6zfMWnkbPEXKng2o2/MR5mSwTrBih4ZEkkz1lg=
 github.com/joho/godotenv v1.4.0/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/jrick/logrotate v1.0.0/go.mod h1:LNinyqDIJnpAur+b8yyulnQw/wDuN1+BYKlTRt3OuAQ=
-github.com/jrkhan/flow-puzzle-hunt/pkg v0.0.0-20220627055040-c2ae735982b3 h1:xw/IE6GZpyCViY8npsJDGggF4fNB0uxN71fdSSW5stc=
-github.com/jrkhan/flow-puzzle-hunt/pkg v0.0.0-20220627055040-c2ae735982b3/go.mod h1:j05heersyuHIVnRe84UWufa/ZAS15jUwtdxGNS+l1pI=
+github.com/jrkhan/flow-puzzle-hunt/pkg v0.0.0-20220627075150-d2308b76dc35 h1:oytN+33XRSk2rHxDiMZ6QNM7O9aIk/KuAuKsNZlA5u4=
+github.com/jrkhan/flow-puzzle-hunt/pkg v0.0.0-20220627075150-d2308b76dc35/go.mod h1:j05heersyuHIVnRe84UWufa/ZAS15jUwtdxGNS+l1pI=
 github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1:6v2b51hI/fHJwM22ozAgKL4VKDeJcHhJFhtBdhmNjmU=
 github.com/jstemmer/go-junit-report v0.9.1/go.mod h1:Brl9GWCQeLvo8nXZwPNNblvFj/XSXhF0NWZEnDohbsk=
 github.com/julienschmidt/httprouter v1.1.1-0.20170430222011-975b5c4c7c21/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
@@ -306,6 +306,7 @@ github.com/onflow/flow-go-sdk v0.26.3 h1:LEowsVrCp81fV1yzFGdL0CrT1V1iv+qy8QBONtP
 github.com/onflow/flow-go-sdk v0.26.3/go.mod h1:lGce072IVVj1EWn6C8xPJcvaGyNwp4AdOMHYcJsORK8=
 github.com/onflow/flow-go/crypto v0.24.3 h1:5puosmiy853m1GPmBLJr4PiLVcCzE4n5o60hRPo9kYA=
 github.com/onflow/flow-go/crypto v0.24.3/go.mod h1:dkVL98P6GHR48iD9zCB6XlnkJX8IQd00FKgt1reV90w=
+github.com/onflow/flow/protobuf/go/flow v0.2.5 h1:IzkN5f3w/qFN2Mshc1I0yNgnT+YbFE5Htz/h8t/VL4c=
 github.com/onflow/flow/protobuf/go/flow v0.2.5/go.mod h1:gQxYqCfkI8lpnKsmIjwtN2mV/N2PIwc1I+RUK4HPIc8=
 github.com/onflow/sdks v0.4.4/go.mod h1:F0dj0EyHC55kknLkeD10js4mo14yTdMotnWMslPirrU=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
