@@ -1,4 +1,4 @@
-module github.com/jrkhan/flow-puzzle-hunt/cors
+module github.com/jrkhan/flow-puzzle-hunt/pkg
 
 go 1.16
 
