@@ -2,15 +2,14 @@ package mint
 
 import (
 	"context"
+	_ "embed"
 	"encoding/json"
-	"fmt"
-	"net/http"
 	"os"
 	"strings"
 
-	"github.com/jrkhan/flow-puzzle-hunt/pkg/cors"
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
+	flowGrpc "github.com/onflow/flow-go-sdk/access/grpc"
 	"github.com/onflow/flow-go-sdk/crypto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -54,30 +53,6 @@ func NewMinter(source []byte) PieceMinter {
 	mp := &map[string]Piece{}
 	json.Unmarshal(source, mp)
 	return PieceMinter{*mp}
-}
-
-func (m *PieceMinter) HandleMintRequest(w http.ResponseWriter, r *http.Request) {
-	cors.HandleCors(w, r)
-	var envelope = &Envelope{}
-	r.Body = http.MaxBytesReader(w, r.Body, 1048576)
-	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(envelope); err != nil {
-		fmt.Fprint(w, "error decoding message")
-		return
-	}
-	ctx := context.Background()
-	signedMsg := envelope.SignedMessage
-	if err := signedMsg.VerifySignature(ctx, w); err != nil {
-		fmt.Fprint(w, err.Error())
-		return
-	}
-	// message has been verified ^
-	id, err := m.MintPiece(signedMsg.Address, signedMsg.Message)
-	if err != nil {
-		fmt.Fprint(w, err.Error())
-		return
-	}
-	fmt.Fprint(w, id.Hex())
 }
 
 func (m *PieceMinter) MintPiece(addr string, key string) (*flow.Identifier, error) {
