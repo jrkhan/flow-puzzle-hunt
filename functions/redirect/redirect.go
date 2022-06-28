@@ -15,7 +15,8 @@ type (
 		GUID string `json:"guid"`
 	}
 	MV struct {
-		PieceID int `json:"pieceId"`
+		PieceID  int `json:"pieceID"`
+		PuzzleID int `json:"puzzleID"`
 	}
 )
 
@@ -43,8 +44,12 @@ func LookupPiece(w http.ResponseWriter, r *http.Request) {
 
 	val, has := guidMap[lookup.GUID]
 	if !has {
-		fmt.Fprintf(w, "0")
-		return
+		val = MV{}
 	}
-	fmt.Fprint(w, val.PieceID)
+
+	res, err := json.Marshal(val)
+	if err != nil {
+		fmt.Fprintf(w, "unable to marshal result")
+	}
+	fmt.Fprint(w, string(res))
 }
