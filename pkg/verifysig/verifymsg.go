@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 
@@ -51,7 +50,7 @@ func (s *SignedMessage) VerifySignature(ctx context.Context, w io.Writer) error 
 	if err != nil {
 		return err
 	}
-	fmt.Fprint(w, args[0].String())
+	// fmt.Fprint(w, args[0].String())
 	// execute script
 	val, err := fc.ExecuteScriptAtLatestBlock(ctx, []byte(q), args)
 	if err != nil {
