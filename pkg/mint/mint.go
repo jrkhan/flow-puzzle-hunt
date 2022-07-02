@@ -2,8 +2,10 @@ package mint
 
 import (
 	"context"
+	"embed"
 	_ "embed"
 	"encoding/json"
+	"fmt"
 	"os"
 	"strings"
 
@@ -39,6 +41,11 @@ type (
 		Address string
 		Piece   Piece
 	}
+
+	MV struct {
+		PieceID  int `json:"pieceID"`
+		PuzzleID int `json:"puzzleID"`
+	}
 )
 
 func txScript() []byte {
@@ -49,10 +56,31 @@ func txScript() []byte {
 	return []byte(os.ExpandEnv(formatted))
 }
 
-func NewMinter(source []byte) PieceMinter {
-	mp := &map[string]Piece{}
-	json.Unmarshal(source, mp)
-	return PieceMinter{*mp}
+func NewMinter(source []byte, files embed.FS) PieceMinter {
+	fileMapRef := &map[string]string{}
+	err := json.Unmarshal(source, fileMapRef)
+	if err != nil {
+		panic(err)
+	}
+	fileMap := *fileMapRef
+	fullMap := map[string]Piece{}
+	for _, file := range fileMap {
+		mp := &map[string]Piece{}
+		fb, err := files.ReadFile(file)
+		if err != nil {
+			panic(err)
+		}
+		err = json.Unmarshal(fb, mp)
+		if err != nil {
+			panic(err)
+		}
+		for k, v := range *mp {
+			fmt.Printf("%v: %v\n", k, v.PieceID)
+			fullMap[k] = v
+		}
+	}
+
+	return PieceMinter{fullMap}
 }
 
 func (m *PieceMinter) MintPiece(addr string, key string) (*flow.Identifier, error) {
@@ -108,6 +136,17 @@ func (m *PieceMinter) MintPiece(addr string, key string) (*flow.Identifier, erro
 	err = fc.SendTransaction(context.Background(), *tx)
 	id := tx.ID()
 	return &id, nil
+}
+
+func (m *PieceMinter) PieceMap(key string) MV {
+	for k, _ := range m.pieceMap {
+		fmt.Println(k)
+	}
+	piece := m.pieceMap[key]
+	return MV{
+		PieceID:  piece.PieceID,
+		PuzzleID: piece.PuzzleID,
+	}
 }
 
 func GetAccessNode() string {

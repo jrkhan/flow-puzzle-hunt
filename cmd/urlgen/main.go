@@ -1,16 +1,17 @@
 package main
 
 import (
-	_ "embed"
+	"embed"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
 
 	"github.com/google/uuid"
 )
 
-//go:embed input.json
-var input []byte
+//go:embed inputs/*
+var fileInput embed.FS
 
 type (
 	Piece struct {
@@ -55,8 +56,27 @@ func (p Puzzle) MintURL(guid string) string {
 	return fmt.Sprintf("%v%v", p.MintPath, guid)
 }
 
+func fileArg() string {
+	args := os.Args[1:]
+	for i, arg := range args {
+		if arg == "-f" && i+1 < len(args) {
+			return args[i+1]
+		}
+	}
+	return ""
+}
+
+func getFile() []byte {
+
+	b, err := fileInput.ReadFile(fileArg())
+	if err != nil {
+		panic(err)
+	}
+	return b
+}
+
 func main() {
-	p := ParseInput(input)
+	p := ParseInput(getFile())
 	// one of our outputs will be a list of pieces
 	mp := map[string]Piece{}
 	for i := 1; i <= p.Count; i++ {

@@ -2,7 +2,7 @@ package mint
 
 import (
 	"context"
-	_ "embed"
+	"embed"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -12,6 +12,9 @@ import (
 	"github.com/jrkhan/flow-puzzle-hunt/pkg/mint"
 	"github.com/jrkhan/flow-puzzle-hunt/pkg/verifysig"
 )
+
+//go:embed puzzles/*.json
+var files embed.FS
 
 //go:embed mintMap.json
 var mintMap []byte
@@ -26,7 +29,7 @@ type (
 )
 
 func init() {
-	minter := &MinterHandler{mint.NewMinter(mintMap)}
+	minter := &MinterHandler{mint.NewMinter(mintMap, files)}
 	functions.HTTP("MintFuzzle", minter.HandleMintRequest)
 }
 

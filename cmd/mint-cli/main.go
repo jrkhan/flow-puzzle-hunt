@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "embed"
+	"embed"
 	"fmt"
 
 	"github.com/joho/godotenv"
@@ -10,6 +10,9 @@ import (
 
 //go:embed mintMap.json
 var mintMap []byte
+
+//go:embed puzzles/*.json
+var files embed.FS
 var minter mint.PieceMinter
 
 func main() {
@@ -17,7 +20,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	minter = mint.NewMinter(mintMap)
+	minter = mint.NewMinter(mintMap, files)
 
 	addr, err := minter.MintPiece(`0xf8d6e0586b0a20c7`, `49b89eea-4c1e-44f1-ab94-b9fdd0f72457`)
 	if err != nil {

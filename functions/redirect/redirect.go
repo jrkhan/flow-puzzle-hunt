@@ -1,13 +1,14 @@
 package redirect
 
 import (
-	_ "embed"
+	"embed"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 	"github.com/jrkhan/flow-puzzle-hunt/pkg/cors"
+	"github.com/jrkhan/flow-puzzle-hunt/pkg/mint"
 )
 
 type (
@@ -18,21 +19,24 @@ type (
 		PieceID  int `json:"pieceID"`
 		PuzzleID int `json:"puzzleID"`
 	}
+	Locator struct {
+		mint.PieceMinter
+	}
 )
 
 //go:embed mintMap.json
-var mapRaw []byte
-var guidMap = map[string]MV{}
+var mintMap []byte
+
+//go:embed puzzles/*.json
+var files embed.FS
 
 func init() {
-	err := json.Unmarshal(mapRaw, &guidMap)
-	if err != nil {
-		panic("unable to build mintMap")
-	}
-	functions.HTTP("LookupPieceByGuid", LookupPiece)
+	minter := mint.NewMinter(mintMap, files)
+	loc := Locator{PieceMinter: minter}
+	functions.HTTP("LookupPieceByGuid", loc.LookupPiece)
 }
 
-func LookupPiece(w http.ResponseWriter, r *http.Request) {
+func (l *Locator) LookupPiece(w http.ResponseWriter, r *http.Request) {
 	cors.HandleCors(w, r)
 	var lookup = &Lookup{}
 	r.Body = http.MaxBytesReader(w, r.Body, 1048576)
@@ -42,10 +46,7 @@ func LookupPiece(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	val, has := guidMap[lookup.GUID]
-	if !has {
-		val = MV{}
-	}
+	val := l.PieceMap(lookup.GUID)
 
 	res, err := json.Marshal(val)
 	if err != nil {
