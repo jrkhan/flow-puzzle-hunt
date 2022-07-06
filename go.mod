@@ -3,8 +3,8 @@ module github.com/jrkhan/flow-puzzle-hunt
 go 1.16
 
 require (
+	cloud.google.com/go/storage v1.10.0
 	github.com/GoogleCloudPlatform/functions-framework-go v1.5.3
-	github.com/divan/qrlogo v1.0.2
 	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.4.0
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646

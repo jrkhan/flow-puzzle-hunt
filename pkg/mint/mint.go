@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/jrkhan/flow-puzzle-hunt/pkg/distributed"
 	"github.com/onflow/cadence"
 	"github.com/onflow/flow-go-sdk"
 	flowGrpc "github.com/onflow/flow-go-sdk/access/grpc"
@@ -107,9 +108,13 @@ func (m *PieceMinter) MintPiece(addr string, key string) (*flow.Identifier, erro
 		return nil, err
 	}
 	proposerKeyIndex := 0
-	// what guarentees do we have about this sequence number?
-	// do we need a distributed lock here?
+
 	sequenceNumber := proposerAccount.Keys[proposerKeyIndex].SequenceNumber
+	// check if this value is valid, or it needs to be incremented
+	sequenceNumber, err = distributed.NextValue(context.Background(), sequenceNumber)
+	if err != nil {
+		return nil, err
+	}
 
 	tx := flow.NewTransaction().
 		SetScript(txScript()).

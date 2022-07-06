@@ -12,3 +12,6 @@ set-image:
 
 mint:
 	flow transactions send ./transactions/mint.cdc --signer emulator-account 0xf8d6e0586b0a20c7 "display name" 1 1
+
+generate-qr:
+	go run ./cmd/qrcodes
