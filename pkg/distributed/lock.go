@@ -15,7 +15,7 @@ var client *storage.Client
 
 func init() {
 	if _, has := os.LookupEnv("GOOGLE_APPLICATION_CREDENTIALS"); !has {
-		panic("No credentials available")
+		fmt.Print("No GOOGLE_APPLICATION_CREDENTIALS found, this might still be okay")
 	}
 	ctx := context.Background()
 	var err error
